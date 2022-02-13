@@ -90,7 +90,7 @@ def build_model(model_name, net_input, num_classes, crop_width, crop_height, fro
 	elif model_name == "AdapNet":
 	    network = build_adaptnet(net_input, num_classes=num_classes)
 	elif model_name == "custom":
-	    network = build_custom(net_input, num_classes)
+	    network = build_custom(net_input, num_classes,frontend=frontend)
 	else:
 	    raise ValueError("Error: the model %d is not available. Try checking which models are available using the command python main.py --help")
 

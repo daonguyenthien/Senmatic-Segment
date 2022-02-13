@@ -8,11 +8,11 @@ from builders import model_builder
 import time
 parser = argparse.ArgumentParser()
 parser.add_argument('--image', type=str, default='./output/', required=False, help='The image you want to predict on. ')
-parser.add_argument('--checkpoint_path', type=str, default='./checkpoints/0200/Face_seg_model/latest_model_Encoder-Decoder-Skip_Face_seg.ckpt', required=False, help='The path to the latest checkpoint weights for your model.')
-parser.add_argument('--crop_height', type=int, default=512, help='Height of cropped input image to network')
-parser.add_argument('--crop_width', type=int, default=512, help='Width of cropped input image to network')
-parser.add_argument('--model', type=str, default='Encoder-Decoder-Skip', required=False, help='The model you are using')
-parser.add_argument('--dataset', type=str, default="Face_seg/", required=False, help='The dataset you are using')
+parser.add_argument('--checkpoint_path', type=str, default='./checkpoints/0008/Crack-seg/model.ckpt', required=False, help='The path to the latest checkpoint weights for your model.')
+parser.add_argument('--crop_height', type=int, default=256, help='Height of cropped input image to network')
+parser.add_argument('--crop_width', type=int, default=256, help='Width of cropped input image to network')
+parser.add_argument('--model', type=str, default='custom', required=False, help='The model you are using')
+parser.add_argument('--dataset', type=str, default="WASR/", required=False, help='The dataset you are using')
 args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 class_names_list, label_values = helpers.get_label_info(os.path.join(args.dataset, "class_dict.csv"))
@@ -65,7 +65,9 @@ for img in glob.glob(args.image+'/*.png'):
     
     out_vis_image = helpers.colour_code_segmentation(output_image, label_values)
     file_name = utils.filepath_to_name( img)
-    cv2.imwrite("%s_pred.png"%(file_name),cv2.cvtColor(np.uint8(out_vis_image), cv2.COLOR_RGB2BGR))
+    out = cv2.cvtColor(np.uint8(out_vis_image), cv2.COLOR_RGB2BGR)
+    out = cv2.addWeighted(out,0.3,resized_image ,0.7,0)
+    cv2.imwrite("%s_pred.png"%(file_name),out)
     print(-tim + time.time())
     print("")
     print("Finished!")
